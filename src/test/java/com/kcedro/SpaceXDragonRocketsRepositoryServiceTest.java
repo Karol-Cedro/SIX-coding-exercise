@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SpaceXDragonRocketsRepositoryServiceTest {
 
@@ -30,13 +31,14 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void addNewRocketTest() {
         //given
-        Rocket rocket = new Rocket();
+        String rocketName = "Dragon";
 
         //when
-        service.addRocket(rocket);
+        Rocket newRocket = service.addRocket(rocketName);
 
         //then
-        assertEquals(rocket.getStatus(), RocketStatus.ON_GROUND);
+        assertEquals(RocketStatus.ON_GROUND, newRocket.getStatus());
+        assertEquals(rocketName, newRocket.getName());
     }
 
     @Test
@@ -56,7 +58,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void changeRocketStatusTest() {
         //given
-        Rocket rocket = new Rocket();
+        Rocket rocket = new Rocket("Dragon");
         RocketStatus newStatus = RocketStatus.IN_SPACE;
 
         //when
