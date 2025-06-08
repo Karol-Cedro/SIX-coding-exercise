@@ -1,5 +1,6 @@
 package com.kcedro;
 
+import com.kcedro.model.Mission;
 import com.kcedro.model.Rocket;
 import com.kcedro.model.RocketStatus;
 import com.kcedro.repository.MissionRepository;
@@ -21,6 +22,12 @@ public class SpaceXDragonRocketsRepositoryService {
         Rocket rocket = new Rocket(name);
         rocketRepository.add(rocket);
         return rocket;
+    }
+
+    public Mission addMission(String name) {
+        Mission mission = new Mission(name);
+        missionRepository.addMission(mission);
+        return mission;
     }
 
     public void changeRocketStatus(UUID rocketId, RocketStatus newStatus) {

@@ -71,13 +71,14 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void addNewMissionTest() {
         //given
-        Mission mission = new Mission();
+        String missionName = "Mars";
 
         //when
-        service.addMission();
+        Mission newMission = service.addMission(missionName);
 
         //then
-        assertEquals(mission.getStatus(), MissionStatus.SCHEDULED);
+        assertEquals(MissionStatus.SCHEDULED, newMission.getStatus());
+        assertEquals(missionName, newMission.getName());
     }
 
     @Test
