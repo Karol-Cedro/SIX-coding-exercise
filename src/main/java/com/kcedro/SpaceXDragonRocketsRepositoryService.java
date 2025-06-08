@@ -1,8 +1,12 @@
 package com.kcedro;
 
 import com.kcedro.model.Rocket;
+import com.kcedro.model.RocketStatus;
 import com.kcedro.repository.MissionRepository;
 import com.kcedro.repository.RocketRepository;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public class SpaceXDragonRocketsRepositoryService {
     private final RocketRepository rocketRepository;
@@ -17,5 +21,15 @@ public class SpaceXDragonRocketsRepositoryService {
         Rocket rocket = new Rocket(name);
         rocketRepository.add(rocket);
         return rocket;
+    }
+
+    public void changeRocketStatus(UUID rocketId, RocketStatus newStatus) {
+        Optional<Rocket> rocket = rocketRepository.getRocket(rocketId);
+
+        if (rocket.isPresent()) {
+            rocket.get().setStatus(newStatus);
+        }else{
+            System.out.println("No Rocket found with id " + rocketId);
+        }
     }
 }

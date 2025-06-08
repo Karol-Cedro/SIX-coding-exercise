@@ -4,6 +4,7 @@ import com.kcedro.model.Rocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class RocketRepository {
@@ -13,7 +14,7 @@ public class RocketRepository {
         rockets.put(rocket.getId(), rocket);
     }
 
-    public Rocket getRocket(UUID rocketId) {
-        return rockets.get(rocketId);
+    public Optional<Rocket> getRocket(UUID rocketId) {
+        return Optional.ofNullable(rockets.get(rocketId));
     }
 }

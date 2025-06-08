@@ -58,15 +58,14 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void changeRocketStatusTest() {
         //given
-        Rocket rocket = new Rocket("Dragon");
+        Rocket rocket = service.addRocket("Dragon");
         RocketStatus newStatus = RocketStatus.IN_SPACE;
 
         //when
-        service.changeRocketStatus(rocket, newStatus);
+        service.changeRocketStatus(rocket.getId(), newStatus);
 
         //then
-        assertTrue(service.getRocket(rocket).getStatus().equals(newStatus));
-
+        assertEquals(newStatus, rocket.getStatus());
     }
 
     @Test
