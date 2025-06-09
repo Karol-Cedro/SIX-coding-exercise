@@ -2,9 +2,7 @@ package com.kcedro.repository;
 
 import com.kcedro.model.Mission;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MissionRepository {
     private final Map<String, Mission> missions = new HashMap<>();
@@ -15,5 +13,9 @@ public class MissionRepository {
 
     public Optional<Mission> getMission(String missionName) {
         return Optional.ofNullable(missions.get(missionName));
+    }
+
+    public List<Mission> getAllMissions() {
+        return new ArrayList<>(missions.values());
     }
 }

@@ -7,9 +7,11 @@ import com.kcedro.model.RocketStatus;
 import com.kcedro.repository.MissionRepository;
 import com.kcedro.repository.RocketRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SpaceXDragonRocketsRepositoryService {
     private final RocketRepository rocketRepository;
@@ -81,5 +83,13 @@ public class SpaceXDragonRocketsRepositoryService {
                 mission.get().addRocket(rocketId);
             });
         });
+    }
+
+    public List<Mission> getMissionsSummary() {
+        return missionRepository.getAllMissions().stream().sorted(
+                Comparator.comparing(
+                        (Mission m)-> m.getAssignedRockets().size())
+                        .thenComparing(Mission::getName)
+                        .reversed()).toList();
     }
 }

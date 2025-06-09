@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SpaceXDragonRocketsRepositoryServiceTest {
 
@@ -117,13 +116,39 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void missionsSummaryTest() {
         //given
-        String expectedSummary = "";
+        Mission mars = service.addMission("Mars");
+        mars.setStatus(MissionStatus.SCHEDULED);
+        Mission luna1 = service.addMission("Luna1");
+        luna1.setStatus(MissionStatus.PENDING);
+        Rocket dragon1 = service.addRocket("Dragon1");
+        Rocket dragon2 = service.addRocket("Dragon2");
+        service.assignRocketsToMission(List.of(dragon1.getId(), dragon2.getId()), luna1.getName());
+        Mission doubleLanding = service.addMission("Double Landing");
+        doubleLanding.setStatus(MissionStatus.ENDED);
+        Mission transit = service.addMission("Transit");
+        Rocket redDragon = service.addRocket("Red Dragon");
+        Rocket dragonXL = service.addRocket("Dragon XL");
+        dragonXL.setStatus(RocketStatus.IN_SPACE);
+        Rocket falconHeavy = service.addRocket("Falcon Heavy");
+        falconHeavy.setStatus(RocketStatus.IN_SPACE);
+        service.assignRocketsToMission(
+                List.of(redDragon.getId(), dragonXL.getId(), falconHeavy.getId()),
+                transit.getName());
+        Mission luna2 = service.addMission("Luna2");
+        luna2.setStatus(MissionStatus.SCHEDULED);
+        Mission verticalLanding = service.addMission("Vertical Landing");
+        verticalLanding.setStatus(MissionStatus.ENDED);
 
         //when
-        String summary = service.getSummary();
+        List<Mission> summary = service.getMissionsSummary();
 
         //then
-        assertEquals(expectedSummary, summary);
+        assertEquals(summary.getFirst().getName(), transit.getName());
+        assertEquals(summary.get(1).getName(), luna1.getName());
+        assertEquals(summary.get(2).getName(), verticalLanding.getName());
+        assertEquals(summary.get(3).getName(), mars.getName());
+        assertEquals(summary.get(4).getName(), luna2.getName());
+        assertEquals(summary.get(5).getName(), doubleLanding.getName());
     }
 
 
