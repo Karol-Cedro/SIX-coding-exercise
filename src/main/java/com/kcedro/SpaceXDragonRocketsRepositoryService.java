@@ -50,4 +50,21 @@ public class SpaceXDragonRocketsRepositoryService {
             System.out.println("No Mission found with name " + missionName);
         }
     }
+
+    public void assignRocketToMission(UUID rocketId, String missionName) {
+        Optional<Rocket> rocket = rocketRepository.getRocket(rocketId);
+        if (rocket.isEmpty()) {
+            System.out.println("No Rocket found with id " + rocketId);
+            return;
+        }
+
+        Optional<Mission> mission = missionRepository.getMission(missionName);
+        if(mission.isEmpty()) {
+            System.out.println("No Mission found with name " + missionName);
+            return;
+        }
+
+        rocket.get().assignMission(missionName);
+        mission.get().addRocket(rocketId);
+    }
 }

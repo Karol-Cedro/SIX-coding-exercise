@@ -28,4 +28,11 @@ public class Mission {
         this.status = status;
     }
 
+    public List<UUID> getAssignedRockets() {
+        return assignedRockets;
+    }
+
+    public void addRocket(UUID rocketId) {
+        assignedRockets.add(rocketId);
+    }
 }

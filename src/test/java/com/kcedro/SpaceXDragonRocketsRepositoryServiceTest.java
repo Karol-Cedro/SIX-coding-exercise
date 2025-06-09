@@ -44,15 +44,15 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void assignRocketToMissionTest() {
         //given
-        Mission mission = new Mission();
-        Rocket rocket = new Rocket();
+        Mission mission = service.addMission("Mars");
+        Rocket rocket = service.addRocket("Dragon");
 
         //when
-        service.assignRocketsToMission(mission, rocket);
+        service.assignRocketToMission(rocket.getId(), mission.getName());
 
         //then
-        assertTrue(service.getMission(mission).getRockets().contains(rocket));
-
+        assertTrue(mission.getAssignedRockets().contains(rocket.getId()));
+        assertEquals(rocket.getAssignedMission(), mission.getName());
     }
 
     @Test
