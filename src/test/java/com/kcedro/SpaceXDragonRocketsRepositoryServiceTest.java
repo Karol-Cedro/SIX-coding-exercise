@@ -1,5 +1,9 @@
 package com.kcedro;
 
+import com.kcedro.exceptions.MissionAlreadyExistsException;
+import com.kcedro.exceptions.MissionNotFoundException;
+import com.kcedro.exceptions.RocketAlreadyAssignedException;
+import com.kcedro.exceptions.RocketNotFoundException;
 import com.kcedro.model.Mission;
 import com.kcedro.model.MissionStatus;
 import com.kcedro.model.Rocket;
@@ -12,8 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SpaceXDragonRocketsRepositoryServiceTest {
 
@@ -54,6 +57,52 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         assertTrue(mission.getAssignedRockets().contains(rocket.getId()));
         assertEquals(rocket.getAssignedMission(), mission.getName());
         assertEquals(RocketStatus.IN_SPACE, rocket.getStatus());
+    }
+
+    @Test
+    void assignRocketToMissionTwiceTest() {
+        //given
+        Mission mission1 = service.addNewMission("Mars");
+        Mission mission2 = service.addNewMission("Luna");
+        Rocket rocket = service.addNewRocket("Dragon");
+
+        //when
+        service.assignRocketToMission(rocket.getId(), mission1.getName());
+
+        //then
+        assertThrows(RocketAlreadyAssignedException.class,
+                () -> service.assignRocketToMission(rocket.getId(), mission2.getName()));
+    }
+
+    @Test
+    void missionAlreadyExistsTest() {
+        //given
+        String missionName = "Mars";
+
+        //when
+        service.addNewMission("Mars");
+
+        //then
+        assertThrows(MissionAlreadyExistsException.class,
+                () -> service.addNewMission(missionName));
+    }
+
+    @Test
+    void rocketNotFoundTest() {
+
+        UUID rocketId = UUID.randomUUID();
+
+        assertThrows(RocketNotFoundException.class,
+                () -> service.changeRocketStatus(rocketId, RocketStatus.IN_SPACE));
+    }
+
+    @Test
+    void missionNotFoundTest() {
+
+        String missionName = "PolandIntoSpace";
+
+        assertThrows(MissionNotFoundException.class,
+                () -> service.changeMissionStatus(missionName, MissionStatus.ENDED));
     }
 
     @Test
