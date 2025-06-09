@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SpaceXDragonRocketsRepositoryService {
     private final RocketRepository rocketRepository;
@@ -39,6 +38,7 @@ public class SpaceXDragonRocketsRepositoryService {
 
         if (rocket.isPresent()) {
             rocket.get().setStatus(newStatus);
+            missionRepository.getMission(rocket.get().getAssignedMission()).ifPresent(this::updateMissionStatus);
         } else {
             System.out.println("No Rocket found with id " + rocketId);
         }
@@ -48,6 +48,14 @@ public class SpaceXDragonRocketsRepositoryService {
         Optional<Mission> mission = missionRepository.getMission(missionName);
 
         if (mission.isPresent()) {
+
+            if (newStatus == MissionStatus.ENDED) {
+                mission.get().getAssignedRockets().stream()
+                        .map(rocketRepository::getRocket)
+                        .flatMap(Optional::stream)
+                        .forEach(rocket -> rocket.assignMission(null));
+                mission.get().getAssignedRockets().clear();
+            }
             mission.get().setStatus(newStatus);
         } else {
             System.out.println("No Mission found with name " + missionName);
@@ -60,15 +68,15 @@ public class SpaceXDragonRocketsRepositoryService {
             System.out.println("No Rocket found with id " + rocketId);
             return;
         }
-
         Optional<Mission> mission = missionRepository.getMission(missionName);
         if (mission.isEmpty()) {
             System.out.println("No Mission found with name " + missionName);
             return;
         }
-
         rocket.get().assignMission(missionName);
+        rocket.get().setStatus(RocketStatus.IN_SPACE);
         mission.get().addRocket(rocketId);
+        updateMissionStatus(mission.get());
     }
 
     public void assignRocketsToMission(List<UUID> listOfRockets, String missionName) {
@@ -77,19 +85,27 @@ public class SpaceXDragonRocketsRepositoryService {
             System.out.println("No Mission found with name " + missionName);
             return;
         }
-
         listOfRockets.forEach(rocketId -> {
             rocketRepository.getRocket(rocketId).ifPresent(rocket -> {
                 mission.get().addRocket(rocketId);
             });
         });
+        updateMissionStatus(mission.get());
     }
 
     public List<Mission> getMissionsSummary() {
         return missionRepository.getAllMissions().stream().sorted(
                 Comparator.comparing(
-                        (Mission m)-> m.getAssignedRockets().size())
+                                (Mission m) -> m.getAssignedRockets().size())
                         .thenComparing(Mission::getName)
                         .reversed()).toList();
+    }
+
+    private void updateMissionStatus(Mission mission) {
+        boolean hasRocketInRepair = mission.getAssignedRockets().stream()
+                .map(rocketRepository::getRocket)
+                .flatMap(Optional::stream)
+                .anyMatch(rocket -> rocket.getStatus() == RocketStatus.IN_REPAIR);
+        mission.setStatus(hasRocketInRepair ? MissionStatus.PENDING : MissionStatus.IN_PROGRESS);
     }
 }

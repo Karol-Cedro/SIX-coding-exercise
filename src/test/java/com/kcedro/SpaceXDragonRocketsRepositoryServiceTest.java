@@ -53,19 +53,35 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         //then
         assertTrue(mission.getAssignedRockets().contains(rocket.getId()));
         assertEquals(rocket.getAssignedMission(), mission.getName());
+        assertEquals(RocketStatus.IN_SPACE, rocket.getStatus());
     }
 
     @Test
     void changeRocketStatusTest() {
         //given
         Rocket rocket = service.addRocket("Dragon");
-        RocketStatus newStatus = RocketStatus.IN_SPACE;
+        RocketStatus newStatus = RocketStatus.IN_REPAIR;
 
         //when
         service.changeRocketStatus(rocket.getId(), newStatus);
 
         //then
         assertEquals(newStatus, rocket.getStatus());
+    }
+
+    @Test
+    void updateMissionStatusAfterRocketStatusChangeTest(){
+        //given
+        Mission mission = service.addMission("Mars");
+        Rocket rocket = service.addRocket("Dragon");
+        service.assignRocketToMission(rocket.getId(), mission.getName());
+        RocketStatus newStatus = RocketStatus.IN_REPAIR;
+
+        //when
+        service.changeRocketStatus(rocket.getId(), newStatus);
+
+        //then
+        assertEquals(MissionStatus.PENDING, mission.getStatus());
     }
 
     @Test
@@ -97,6 +113,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         //then
         assertEquals(mission.getAssignedRockets(), rockets);
         assertEquals(3, mission.getAssignedRockets().size());
+        assertEquals(MissionStatus.IN_PROGRESS, mission.getStatus());
     }
 
     @Test
@@ -111,6 +128,22 @@ class SpaceXDragonRocketsRepositoryServiceTest {
 
         //then
         assertEquals(newMissionstatus, mission.getStatus());
+    }
+
+    @Test
+    void rocketsShouldBeNoLongerAssignedToMissionAfterEnding(){
+        //given
+        String missionName = "Mars";
+        Mission mission = service.addMission(missionName);
+        Rocket rocket = service.addRocket("Dragon");
+        service.assignRocketToMission(rocket.getId(), mission.getName());
+
+        //when
+        service.changeMissionStatus(missionName, MissionStatus.ENDED);
+
+        //then
+        assertNull(rocket.getAssignedMission());
+        assertTrue(mission.getAssignedRockets().isEmpty());
     }
 
     @Test

@@ -12,7 +12,7 @@ public class Mission {
 
     public Mission(String name) {
         this.name = name;
-        this.status = MissionStatus.IN_PROGRESS;
+        this.status = MissionStatus.SCHEDULED;
         this.assignedRockets = new ArrayList<>();
     }
 
