@@ -21,13 +21,13 @@ public class SpaceXDragonRocketsRepositoryService {
         this.missionRepository = missionRepository;
     }
 
-    public Rocket addRocket(String name) {
+    public Rocket addNewRocket(String name) {
         Rocket rocket = new Rocket(name);
         rocketRepository.add(rocket);
         return rocket;
     }
 
-    public Mission addMission(String name) {
+    public Mission addNewMission(String name) {
         Mission mission = new Mission(name);
         missionRepository.addMission(mission);
         return mission;

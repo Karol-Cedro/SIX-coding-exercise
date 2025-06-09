@@ -9,7 +9,6 @@ import com.kcedro.repository.RocketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         String rocketName = "Dragon";
 
         //when
-        Rocket newRocket = service.addRocket(rocketName);
+        Rocket newRocket = service.addNewRocket(rocketName);
 
         //then
         assertEquals(RocketStatus.ON_GROUND, newRocket.getStatus());
@@ -44,8 +43,8 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void assignRocketToMissionTest() {
         //given
-        Mission mission = service.addMission("Mars");
-        Rocket rocket = service.addRocket("Dragon");
+        Mission mission = service.addNewMission("Mars");
+        Rocket rocket = service.addNewRocket("Dragon");
 
         //when
         service.assignRocketToMission(rocket.getId(), mission.getName());
@@ -59,7 +58,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void changeRocketStatusTest() {
         //given
-        Rocket rocket = service.addRocket("Dragon");
+        Rocket rocket = service.addNewRocket("Dragon");
         RocketStatus newStatus = RocketStatus.IN_REPAIR;
 
         //when
@@ -72,8 +71,8 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void updateMissionStatusAfterRocketStatusChangeTest(){
         //given
-        Mission mission = service.addMission("Mars");
-        Rocket rocket = service.addRocket("Dragon");
+        Mission mission = service.addNewMission("Mars");
+        Rocket rocket = service.addNewRocket("Dragon");
         service.assignRocketToMission(rocket.getId(), mission.getName());
         RocketStatus newStatus = RocketStatus.IN_REPAIR;
 
@@ -90,7 +89,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         String missionName = "Mars";
 
         //when
-        Mission newMission = service.addMission(missionName);
+        Mission newMission = service.addNewMission(missionName);
 
         //then
         assertEquals(MissionStatus.SCHEDULED, newMission.getStatus());
@@ -100,11 +99,11 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void assignMultipleRocketsToMissionTest() {
         //given
-        Mission mission = service.addMission("Mars");
+        Mission mission = service.addNewMission("Mars");
         List<UUID> rockets = List.of(
-                service.addRocket("Dragon 1").getId(),
-                service.addRocket("Dragon 2").getId(),
-                service.addRocket("Dragon 3").getId()
+                service.addNewRocket("Dragon 1").getId(),
+                service.addNewRocket("Dragon 2").getId(),
+                service.addNewRocket("Dragon 3").getId()
         );
 
         //when
@@ -120,7 +119,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     void changeMissionStatusTest() {
         //given
         String missionName = "Mars";
-        Mission mission = service.addMission(missionName);
+        Mission mission = service.addNewMission(missionName);
         MissionStatus newMissionstatus = MissionStatus.IN_PROGRESS;
 
         //when
@@ -134,8 +133,8 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     void rocketsShouldBeNoLongerAssignedToMissionAfterEnding(){
         //given
         String missionName = "Mars";
-        Mission mission = service.addMission(missionName);
-        Rocket rocket = service.addRocket("Dragon");
+        Mission mission = service.addNewMission(missionName);
+        Rocket rocket = service.addNewRocket("Dragon");
         service.assignRocketToMission(rocket.getId(), mission.getName());
 
         //when
@@ -149,27 +148,27 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void missionsSummaryTest() {
         //given
-        Mission mars = service.addMission("Mars");
+        Mission mars = service.addNewMission("Mars");
         mars.setStatus(MissionStatus.SCHEDULED);
-        Mission luna1 = service.addMission("Luna1");
+        Mission luna1 = service.addNewMission("Luna1");
         luna1.setStatus(MissionStatus.PENDING);
-        Rocket dragon1 = service.addRocket("Dragon1");
-        Rocket dragon2 = service.addRocket("Dragon2");
+        Rocket dragon1 = service.addNewRocket("Dragon1");
+        Rocket dragon2 = service.addNewRocket("Dragon2");
         service.assignRocketsToMission(List.of(dragon1.getId(), dragon2.getId()), luna1.getName());
-        Mission doubleLanding = service.addMission("Double Landing");
+        Mission doubleLanding = service.addNewMission("Double Landing");
         doubleLanding.setStatus(MissionStatus.ENDED);
-        Mission transit = service.addMission("Transit");
-        Rocket redDragon = service.addRocket("Red Dragon");
-        Rocket dragonXL = service.addRocket("Dragon XL");
+        Mission transit = service.addNewMission("Transit");
+        Rocket redDragon = service.addNewRocket("Red Dragon");
+        Rocket dragonXL = service.addNewRocket("Dragon XL");
         dragonXL.setStatus(RocketStatus.IN_SPACE);
-        Rocket falconHeavy = service.addRocket("Falcon Heavy");
+        Rocket falconHeavy = service.addNewRocket("Falcon Heavy");
         falconHeavy.setStatus(RocketStatus.IN_SPACE);
         service.assignRocketsToMission(
                 List.of(redDragon.getId(), dragonXL.getId(), falconHeavy.getId()),
                 transit.getName());
-        Mission luna2 = service.addMission("Luna2");
+        Mission luna2 = service.addNewMission("Luna2");
         luna2.setStatus(MissionStatus.SCHEDULED);
-        Mission verticalLanding = service.addMission("Vertical Landing");
+        Mission verticalLanding = service.addNewMission("Vertical Landing");
         verticalLanding.setStatus(MissionStatus.ENDED);
 
         //when
