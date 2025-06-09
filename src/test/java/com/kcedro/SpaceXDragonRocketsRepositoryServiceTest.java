@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,14 +85,19 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     @Test
     void assignMultipleRocketsToMissionTest() {
         //given
-        Mission mission = new Mission();
-        List<Rocket> rockets = new ArrayList<>();
+        Mission mission = service.addMission("Mars");
+        List<UUID> rockets = List.of(
+                service.addRocket("Dragon 1").getId(),
+                service.addRocket("Dragon 2").getId(),
+                service.addRocket("Dragon 3").getId()
+        );
 
         //when
-        service.assignRocketsToMission(mission, rockets);
+        service.assignRocketsToMission(rockets, mission.getName());
 
         //then
-        assertEquals(service.getMission(mission).getRockets().size() == rockets.size());
+        assertEquals(mission.getAssignedRockets(), rockets);
+        assertEquals(3, mission.getAssignedRockets().size());
     }
 
     @Test

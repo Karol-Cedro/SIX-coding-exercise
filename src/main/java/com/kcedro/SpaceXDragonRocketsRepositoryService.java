@@ -7,6 +7,7 @@ import com.kcedro.model.RocketStatus;
 import com.kcedro.repository.MissionRepository;
 import com.kcedro.repository.RocketRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public class SpaceXDragonRocketsRepositoryService {
 
         if (rocket.isPresent()) {
             rocket.get().setStatus(newStatus);
-        }else{
+        } else {
             System.out.println("No Rocket found with id " + rocketId);
         }
     }
@@ -59,12 +60,26 @@ public class SpaceXDragonRocketsRepositoryService {
         }
 
         Optional<Mission> mission = missionRepository.getMission(missionName);
-        if(mission.isEmpty()) {
+        if (mission.isEmpty()) {
             System.out.println("No Mission found with name " + missionName);
             return;
         }
 
         rocket.get().assignMission(missionName);
         mission.get().addRocket(rocketId);
+    }
+
+    public void assignRocketsToMission(List<UUID> listOfRockets, String missionName) {
+        Optional<Mission> mission = missionRepository.getMission(missionName);
+        if (mission.isEmpty()) {
+            System.out.println("No Mission found with name " + missionName);
+            return;
+        }
+
+        listOfRockets.forEach(rocketId -> {
+            rocketRepository.getRocket(rocketId).ifPresent(rocket -> {
+                mission.get().addRocket(rocketId);
+            });
+        });
     }
 }
