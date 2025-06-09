@@ -14,6 +14,7 @@ public class Rocket {
         this.id = UUID.randomUUID();
         this.name = name;
         this.status = RocketStatus.ON_GROUND;
+        this.assignedMission = "";
     }
 
     public UUID getId() {

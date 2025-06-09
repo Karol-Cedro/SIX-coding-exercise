@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SpaceXDragonRocketsRepositoryServiceTest {
 
@@ -69,7 +70,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     }
 
     @Test
-    void updateMissionStatusAfterRocketStatusChangeTest(){
+    void updateMissionStatusAfterRocketStatusChangeTest() {
         //given
         Mission mission = service.addNewMission("Mars");
         Rocket rocket = service.addNewRocket("Dragon");
@@ -130,7 +131,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
     }
 
     @Test
-    void rocketsShouldBeNoLongerAssignedToMissionAfterEnding(){
+    void rocketsShouldBeNoLongerAssignedToMissionAfterEnding() {
         //given
         String missionName = "Mars";
         Mission mission = service.addNewMission(missionName);
@@ -141,7 +142,7 @@ class SpaceXDragonRocketsRepositoryServiceTest {
         service.changeMissionStatus(missionName, MissionStatus.ENDED);
 
         //then
-        assertNull(rocket.getAssignedMission());
+        assertEquals("", rocket.getAssignedMission());
         assertTrue(mission.getAssignedRockets().isEmpty());
     }
 
