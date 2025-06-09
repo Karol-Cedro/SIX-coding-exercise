@@ -1,5 +1,8 @@
 package com.kcedro;
 
+import com.kcedro.exceptions.MissionNotFoundException;
+import com.kcedro.exceptions.RocketAlreadyAssignedException;
+import com.kcedro.exceptions.RocketNotFoundException;
 import com.kcedro.model.Mission;
 import com.kcedro.model.MissionStatus;
 import com.kcedro.model.Rocket;
@@ -35,7 +38,7 @@ public class SpaceXDragonRocketsRepositoryService {
 
     public void changeRocketStatus(UUID rocketId, RocketStatus newStatus) {
         Rocket rocket = rocketRepository.getRocket(rocketId).orElseThrow(
-                () -> new IllegalArgumentException("No Rocket found with id " + rocketId)
+                () -> new RocketNotFoundException("No Rocket found with id " + rocketId)
         );
         rocket.setStatus(newStatus);
         Optional.ofNullable(rocket.getAssignedMission())
@@ -45,7 +48,7 @@ public class SpaceXDragonRocketsRepositoryService {
 
     public void changeMissionStatus(String missionName, MissionStatus newStatus) {
         Mission mission = missionRepository.getMission(missionName).orElseThrow(
-                () -> new IllegalArgumentException("No Mission found with name " + missionName)
+                () -> new MissionNotFoundException("No Mission found with name " + missionName)
         );
 
         if (newStatus == MissionStatus.ENDED && !mission.getAssignedRockets().isEmpty()) {
@@ -60,13 +63,13 @@ public class SpaceXDragonRocketsRepositoryService {
 
     public void assignRocketToMission(UUID rocketId, String missionName) {
         Rocket rocket = rocketRepository.getRocket(rocketId).orElseThrow(
-                () -> new IllegalArgumentException("No Rocket found with id " + rocketId)
+                () -> new RocketNotFoundException("No Rocket found with id " + rocketId)
         );
         Mission mission = missionRepository.getMission(missionName).orElseThrow(
-                () -> new IllegalArgumentException("No Mission found with name " + missionName)
+                () -> new MissionNotFoundException("No Mission found with name " + missionName)
         );
         if (!rocket.getAssignedMission().isEmpty()) {
-            throw new IllegalStateException("Rocket is already assigned to mission");
+            throw new RocketAlreadyAssignedException("Rocket is already assigned to mission");
         }
 
         rocket.assignMission(missionName);
