@@ -4,6 +4,7 @@ import com.kcedro.model.Mission;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MissionRepository {
     private final Map<String, Mission> missions = new HashMap<>();
@@ -12,7 +13,7 @@ public class MissionRepository {
         missions.put(mission.getName(), mission);
     }
 
-    public Mission getMission(String missionName) {
-        return missions.get(missionName);
+    public Optional<Mission> getMission(String missionName) {
+        return Optional.ofNullable(missions.get(missionName));
     }
 }

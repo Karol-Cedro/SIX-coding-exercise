@@ -1,6 +1,7 @@
 package com.kcedro;
 
 import com.kcedro.model.Mission;
+import com.kcedro.model.MissionStatus;
 import com.kcedro.model.Rocket;
 import com.kcedro.model.RocketStatus;
 import com.kcedro.repository.MissionRepository;
@@ -37,6 +38,16 @@ public class SpaceXDragonRocketsRepositoryService {
             rocket.get().setStatus(newStatus);
         }else{
             System.out.println("No Rocket found with id " + rocketId);
+        }
+    }
+
+    public void changeMissionStatus(String missionName, MissionStatus newStatus) {
+        Optional<Mission> mission = missionRepository.getMission(missionName);
+
+        if (mission.isPresent()) {
+            mission.get().setStatus(newStatus);
+        } else {
+            System.out.println("No Mission found with name " + missionName);
         }
     }
 }
